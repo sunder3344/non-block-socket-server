@@ -15,15 +15,16 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#define MAXLINE 10
+#define MAXLINE 4096
 #define OPEN_MAX 100
-#define LISTENQ 20
+#define LISTENQ 2048
+#define SOCKET_NUM 4096
 #define SERV_PORT 8888
 #define INFTIM 1000
 #define IP_ADDR "127.0.0.1"
 
 int main(int argc, char * argv[]) {
-	struct epoll_event ev, events[20];
+	struct epoll_event ev, events[SOCKET_NUM];
 	struct sockaddr_in clientaddr, serveraddr;
 	int epfd;
 	int listenfd;		//监听fd
@@ -36,7 +37,8 @@ int main(int argc, char * argv[]) {
 	epfd = epoll_create(256);		//生成epoll句柄
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);	//创建套接字
 	ev.data.fd = listenfd;		//设置与要处理事件相关的文件描写叙述符
-	ev.events = EPOLLIN;		//设置要处理的事件类型
+	//ev.events = EPOLLIN|EPOLLET;		//设置要处理的事件类型(打开ET模式，可选;当设置ET时，需要用fcntl将socket设置为非阻塞模式)
+	ev.events = EPOLLIN;
 	
 	epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &ev);	//注冊epoll事件
 
@@ -49,7 +51,7 @@ int main(int argc, char * argv[]) {
 	listen(listenfd, LISTENQ);	//转为监听套接字
 	int n;
 	while(1) {
-		nfds = epoll_wait(epfd, events, 20, 1);	//等待事件发生
+		nfds = epoll_wait(epfd, events, SOCKET_NUM, 1);	//等待事件发生
 		for (i = 0; i < nfds; i++) {		//处理所发生的全部事件
 			if (events[i].data.fd == listenfd) {	//有新的连接
 				clilen = sizeof(struct sockaddr_in);
@@ -62,6 +64,7 @@ int main(int argc, char * argv[]) {
 				if ((sock_fd = events[i].data.fd) < 0) {
 					continue;
 				}
+				memset(&buf, 0, sizeof(buf));
 				if ((n = recv(sock_fd, buf, MAXLINE, 0)) < 0) {
 					if (errno == ECONNRESET) {
 						close(sock_fd);	
