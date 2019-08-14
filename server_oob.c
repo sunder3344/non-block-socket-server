@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	printf("new_fd = %d\n", new_fd);
 	if (new_fd != -1) {
 		signal(SIGURG, sig_urg);
-		int z = fcntl(new_fd, F_SETOWN, getpid());
+		int z = fcntl(new_fd, F_SETOWN, getpid());		//使用fcntl设置已连接套接字的属主
 
 		printf("get the server! z = %d\n", z);
 	
