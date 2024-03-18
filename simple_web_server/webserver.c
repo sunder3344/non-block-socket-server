@@ -84,7 +84,7 @@ int main(int argc, char * argv[]) {
 	listen(listenfd, LISTENQ);	//转为监听套接字
 	int n;
 	while(1) {
-		nfds = epoll_wait(epfd, events, SOCKET_NUM, 1);	//等待事件发生
+		nfds = epoll_wait(epfd, events, SOCKET_NUM, 1000);	//等待事件发生
 		for (i = 0; i < nfds; i++) {		//处理所发生的全部事件
 			if (events[i].data.fd == listenfd) {	//有新的连接
 				clilen = sizeof(struct sockaddr_in);
