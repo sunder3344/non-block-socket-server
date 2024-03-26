@@ -65,6 +65,9 @@ int main(int argc, char * argv[]) {
 	if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on)) < 0) {
 		perror("port reuse error!");
 	}
+	if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
+		perror("addr reuse error!");
+	}
 	ev.data.fd = listenfd;		//设置与要处理事件相关的文件描写叙述符
 	//ev.events = EPOLLIN|EPOLLET;		//设置要处理的事件类型(打开ET模式，可选;当设置ET时，需要用fcntl将socket设置为非阻塞模式)
 	ev.events = EPOLLIN;
