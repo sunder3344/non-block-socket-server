@@ -29,7 +29,7 @@ void render(int sock_fd, char *buf) {
 	char *url = strtok(buf + 4, " ");
 	char *path = strtok(url, "?");
 	char file_path[MAXLINE];
-	sprintf(file_path, "./%s", path);
+	sprintf(file_path, "%s%s", SERVER_DIR, path);
 	printf("file_path: = %s\n", file_path);
 	FILE *file = fopen(file_path, "r");
 	if (file != NULL) {
