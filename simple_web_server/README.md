@@ -3,6 +3,8 @@
 
 基于epoll的简单web server，实现nginx的最基本功能
 
+2024-04-10更新：增加php支持
+
 
 <h1>使用</h1>
 
