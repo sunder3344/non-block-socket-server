@@ -56,6 +56,15 @@ void render_php(int sock_fd, char *buf) {
 	char file_path[MAXLINE];
 	sprintf(file_path, "%s%s", SERVER_DIR, path);
 
+	//如果文件不存在直接返回404
+    FILE *file = fopen(file_path, "r");
+    if (file == NULL) {
+        char not_found[] = "HTTP/1.1 404 Not Found\n\n";
+        send(sock_fd, not_found, strlen(not_found), 0);
+        close(sock_fd);
+        return;
+    }
+
 	Fcgi_t *c;
     c = (Fcgi_t *)malloc(sizeof(Fcgi_t));
     FCGI_init(c);
