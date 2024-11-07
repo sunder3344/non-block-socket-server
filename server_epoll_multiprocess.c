@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 #define MAXLINE 4096
 #define OPEN_MAX 100
@@ -25,7 +26,7 @@
 #define IP_ADDR "127.0.0.1"
 #define WORKER 2
 
-void sig_child(signo) {
+void sig_child(int signo) {
 	pid_t pid;
 	int stat;
 	while((pid == waitpid(-1, &stat, WNOHANG)) > 0) {
